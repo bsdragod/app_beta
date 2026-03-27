@@ -12,13 +12,20 @@ $sql = "INSERT INTO users (nombre,apellido,email,telefono,contraseña) VALUES ('
 //execute query
 pg_query($sql);
 
-// RAMA 4 
-$enc_pass = password_hash($p_sword, PASSWORD_BCRYPT);
+//RAMA 1
+
+//email 
+$check_email = "SELECT email FROM users_model WHERE email = '$e_mail'";
+$res_email = pg_query($local_conn, $check_email);
+
+if (pg_num_rows($res_email) > 0) {
+    echo "Error: El correo electrónico '$e_mail' ya está registrado. Por favor, use uno diferente.\n";
+    exit();
+}
 
 //RAMA 2
-
 //telefono 
-$check_phone = "SELECT mobile_phone FROM  users  WHERE mobile_phone = '$m_phone'";
+$check_phone = "SELECT mobile_phone FROM users WHERE mobile_phone = '$m_phone'";
 $res_phone = pg_query($local_conn, $check_phone);
 
 if (pg_num_rows($res_phone) > 0) {
@@ -26,20 +33,8 @@ if (pg_num_rows($res_phone) > 0) {
     exit();
 }
 
-//RAMA 1
-
-//email 
-$check_email = "SELECT email FROM users WHERE email = '$e_mail'";
-$res_email = pg_query($local_conn, $check_email);
-
-if (pg_num_rows($res_email) > 0) {
-    echo "Error: El correo electrónico '$e_mail' ya está registrado. Por favor, use uno diferente.\n";
-    exit();
-
-
-$res_local = pg_query($local_conn, $sql); 
-
 //RAMA 3 
+
 if ($res_local) {
     // --- PASO B: Si funcionó el anterior, guardar en la nube (Supabase) ---
     $res_supa = pg_query($supa_conn, $sql);
@@ -52,5 +47,6 @@ if ($res_local) {
 } else {
     echo "Error: No se pudo guardar ni en local.";
 }
-
+//RAMA 4 
+$enc_pass = password_hash($p_sword, PASSWORD_BCRYPT);
 ?>
