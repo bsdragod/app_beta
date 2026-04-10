@@ -3,6 +3,7 @@ include ('../config/database.php');
 //getdata
 $f_name = $_POST ['fname'];
 $l_name = $_POST ['lname'];
+<<<<<<< HEAD
 $m_phone = $_POST ['mphone'];
 $e_mail= $_POST ['email'];
 $p_sswd= $_POST ['passwd'];
@@ -22,6 +23,14 @@ if(pg_num_rows($check_email) > 0){
     echo "El correo ya está registrado";
     exit;
 }
+=======
+$e_mail = $_POST ['email'];
+$m_phone= $_POST  ['mphone'];
+$passwd = $_POST ['passwd']; 
+$enc_pass = md5($passwd);
+//query to insert into SQL.
+$sql = "INSERT INTO users (nombre,apellido,email,telefono,contraseña) VALUES ('$f_name','$l_name','$e_mail','$m_phone','$enc_pass')";
+>>>>>>> b331016821d326c9c6dd2396cc00c7a965d480e0
 
 // FEATURE 2
 $check_phone = pg_query($local_conn, "SELECT * FROM users WHERE telefono='$m_phone'");
