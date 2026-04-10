@@ -20,14 +20,14 @@
             <td> peter@gmail.com </td>
             <td> 300123 </td>
             <td> Active </td>
-            <td> <img src='profile_photos/user_default.png' width="50" alt="User photo"></td>
+            <td> <img src="profile_photos/user_default.png" width="50" alt="User photo"></td>
             <td>
                 <a href="#">
-                    <img src='icons/edit.png' width="20" alt ="Edit user">
+                    <img src="icons/edit.png" width="20" alt ="Edit user">
                 </a>
                 &nbsp;&nbsp;
                 <a href="#">
-                    <img src='icons/delete.png' width="20" alt ="Delete user">
+                    <img src="icons/delete.png" width="20" alt ="Delete user">
                 </a>
             </td>
     </table>
