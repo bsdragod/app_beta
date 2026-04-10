@@ -1,56 +1,43 @@
 <?php
-include('../config/database.php');
-//get data
+include ('../config/database.php');
+//getdata
 $f_name = $_POST ['fname'];
 $l_name = $_POST ['lname'];
-$e_mail = $_POST ['email'];
-$m_phone= $_POST  ['mphone'];
-$passwd = $_POST ['passwd']; 
-$enc_pass = md5($passwd);
-//query to insert into SQL.
-$sql = "INSERT INTO users (nombre,apellido,email,telefono,contraseña) VALUES ('$f_name','$l_name','$e_mail','$m_phone','$enc_pass')";
-//execute query
-pg_query($sql);
+$m_phone = $_POST ['mphone'];
+$e_mail= $_POST ['email'];
+$p_sswd= $_POST ['passwd'];
+$enc_pass = md5($p_sswd);
+//  FEATURE 4
+$enc_pass = password_hash($p_sswd, PASSWORD_DEFAULT);
 
-// RAMA 4 
-$enc_pass = password_hash($p_sword, PASSWORD_BCRYPT);
-
-//RAMA 2
-
-//telefono 
-$check_phone = "SELECT mobile_phone FROM  users  WHERE mobile_phone = '$m_phone'";
-$res_phone = pg_query($local_conn, $check_phone);
-
-if (pg_num_rows($res_phone) > 0) {
-    echo "Error: El número de celular '$m_phone' ya está registrado en nuestro sistema."; 
-    exit();
+// VALIDAR CONTRASEÑAS
+if($p_sswd != $confirm){
+    echo "Las contraseñas no coinciden";
+    exit;
 }
 
-//RAMA 1
-
-//email 
-$check_email = "SELECT email FROM users WHERE email = '$e_mail'";
-$res_email = pg_query($local_conn, $check_email);
-
-if (pg_num_rows($res_email) > 0) {
-    echo "Error: El correo electrónico '$e_mail' ya está registrado. Por favor, use uno diferente.\n";
-    exit();
-
-
-$res_local = pg_query($local_conn, $sql); 
-
-//RAMA 3 
-if ($res_local) {
-    // --- PASO B: Si funcionó el anterior, guardar en la nube (Supabase) ---
-    $res_supa = pg_query($supa_conn, $sql);
-
-    if ($res_supa) {
-        echo "¡Listo! Guardado en ambos lados.";
-    } else {
-        echo "Error: Se guardó en local pero no en la nube.";
-    }
-} else {
-    echo "Error: No se pudo guardar ni en local.";
+//  FEATURE 1
+$check_email = pg_query($local_conn, "SELECT * FROM users WHERE email='$e_mail'");
+if(pg_num_rows($check_email) > 0){
+    echo "El correo ya está registrado";
+    exit;
 }
+
+// FEATURE 2
+$check_phone = pg_query($local_conn, "SELECT * FROM users WHERE telefono='$m_phone'");
+if(pg_num_rows($check_phone) > 0){
+    echo "El teléfono ya está registrado";
+    exit;
+}
+
+//  INSERT
+$sql = "INSERT INTO users (nombre, apellido, telefono, email, contrasena)
+VALUES ('$f_name','$l_name','$m_phone','$e_mail','$enc_pass')";
+
+// FEATURE 3
+pg_query($local_conn, $sql);
+pg_query($supa_conn, $sql);
+
+echo "Registro exitoso";
 
 ?>
